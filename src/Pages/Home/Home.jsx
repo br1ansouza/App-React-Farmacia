@@ -50,7 +50,7 @@ const Home = ({ navigation }) => {
             <View style={styles.header}>
                 <View style={styles.userInfo}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }}
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // vincular a imagem de perfil do DB
                         style={styles.profileImage}
                     />
                     <Text style={styles.greeting}>Olá, {userName}</Text>
@@ -64,7 +64,7 @@ const Home = ({ navigation }) => {
             <View style={styles.card}>
                 <View style={styles.cardContent}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }}
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }} // imagem png do estoque
                         style={styles.icon}
                     />
                     <View>
@@ -83,7 +83,7 @@ const Home = ({ navigation }) => {
             <View style={styles.card}>
                 <View style={styles.cardContent}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }}
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }} // imagem png da aba de usuários
                         style={styles.icon}
                     />
                     <View>
@@ -105,7 +105,7 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#121212',  
+        backgroundColor: '#121212',
         paddingHorizontal: 20,
         paddingVertical: 30,
     },
