@@ -45,12 +45,12 @@ const Home = ({ navigation }) => {
     };
 
     return (
-        <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}> 
-            {/* cabeçalho com saudação e botão logout */}
-            <View style={styles.header}>  
+        <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
+           {/* cabeçalho com saudação e botão logout */}
+            <View style={styles.header}>
                 <View style={styles.userInfo}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // vincular a imagem de perfil do DB
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }}
                         style={styles.profileImage}
                     />
                     <Text style={styles.greeting}>Olá, {userName}</Text>
@@ -64,10 +64,13 @@ const Home = ({ navigation }) => {
             <View style={styles.card}>
                 <View style={styles.cardContent}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }} // imagem png do estoque
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }}
                         style={styles.icon}
                     />
-                    <Text style={styles.cardText}>Estoque</Text>
+                    <View>
+                        <Text style={styles.cardText}>Estoque</Text>
+                        <Text style={styles.cardDescription}>Gerencie o inventário da loja</Text>
+                    </View>
                 </View>
                 <TouchableOpacity
                     style={styles.manageButton}
@@ -80,10 +83,13 @@ const Home = ({ navigation }) => {
             <View style={styles.card}>
                 <View style={styles.cardContent}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }} // imagem png da aba de usuários
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }}
                         style={styles.icon}
                     />
-                    <Text style={styles.cardText}>Usuários</Text>
+                    <View>
+                        <Text style={styles.cardText}>Usuários</Text>
+                        <Text style={styles.cardDescription}>Acesse a lista de usuários</Text>
+                    </View>
                 </View>
                 <TouchableOpacity
                     style={styles.manageButton}
@@ -99,7 +105,7 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#121212',
+        backgroundColor: '#121212',  
         paddingHorizontal: 20,
         paddingVertical: 30,
     },
@@ -125,19 +131,19 @@ const styles = StyleSheet.create({
         color: '#fff',
     },
     logoutButton: {
-        backgroundColor: '#6200EE', 
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        backgroundColor: '#6200EE',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
         borderRadius: 8,
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     card: {
         backgroundColor: '#FFF',
-        borderRadius: 8,
+        borderRadius: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -145,6 +151,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderWidth: 1,
         borderColor: '#E0E0E0',
+        shadowColor: '#fff', // sombra "branca"
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4, 
+        shadowRadius: 6,  
+        elevation: 10,  
     },
     cardContent: {
         flexDirection: 'row',
@@ -160,10 +171,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
     },
+    cardDescription: {
+        fontSize: 14,
+        color: '#666',
+    },
     manageButton: {
         backgroundColor: '#6200EE',
         paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 19,
         borderRadius: 8,
     },
 });
