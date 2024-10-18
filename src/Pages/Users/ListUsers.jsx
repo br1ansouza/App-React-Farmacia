@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Switch, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons'; 
 
 export default function ListUsers() {
     const [users, setUsers] = useState([]);
@@ -32,6 +33,18 @@ export default function ListUsers() {
         }
     };
 
+    // função para excluir o usuário
+    const deleteUser = async (userId) => {
+        try {
+            await axios.delete(`http://10.0.2.2:3000/users/${userId}`);
+            Alert.alert('Sucesso', 'Usuário excluído com sucesso.');
+            fetchUsers();  // atualiza a lista de usuários após a exclusão
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível excluir o usuário.');
+        }
+    };
+
+
     // renderiza cada item (usuário) da lista
     const renderUserItem = ({ item }) => {
         return (
@@ -42,12 +55,23 @@ export default function ListUsers() {
                         <Text style={styles.userAddress}>{item.full_address}</Text>
                         <Text style={styles.userType}>Tipo: {item.profile}</Text>
                     </View>
-                    <Switch
-                        value={item.status === 1} // verifica se o status é 1 (ativo)
-                        onValueChange={() => toggleUserStatus(item.id)}  // alterna status
-                        trackColor={{ false: '#767577', true: '#81b0ff' }}  // azul para ativo, cinza para inativo
-                        thumbColor={item.status === 1 ? '#f4f3f4' : '#f4f3f4'}
-                    />
+                    <View style={styles.actions}>
+                        <Switch
+                            value={item.status === 1} // verifica se o status é 1 (ativo)
+                            onValueChange={() => toggleUserStatus(item.id)}  // alterna status
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}  // azul para ativo, cinza para inativo
+                            thumbColor={item.status === 1 ? '#f4f3f4' : '#f4f3f4'}
+                        />
+                        {/* icone de lixeira para excluir */}
+                        {(item.profile === 'motorista' || item.profile === 'filial') && (
+                            <TouchableOpacity
+                                style={styles.deleteButton}
+                                onPress={() => confirmDelete(item.id, item.profile)}
+                            >
+                                <MaterialIcons name="delete" size={24} color="#E53935" />
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
             </View>
         );
@@ -59,7 +83,7 @@ export default function ListUsers() {
                 <Text style={styles.headerText}>Usuários</Text>
                 <TouchableOpacity
                     style={styles.newUserButton}
-                    onPress={() => navigation.navigate('RegisterUser')} // Verifique se o nome está igual
+                    onPress={() => navigation.navigate('RegisterUser')} // verifique se o nome está igual
                 >
                     <Text style={styles.newUserButtonText}>Novo usuário</Text>
                 </TouchableOpacity>
@@ -126,6 +150,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
     },
+    actions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     userName: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -149,5 +177,8 @@ const styles = StyleSheet.create({
     inactive: {
         backgroundColor: '#d98580',  // fundo vermelho para usuários inativos
         borderColor: 'red',
+    },
+    deleteButton: {
+        marginLeft: 10,
     },
 });
