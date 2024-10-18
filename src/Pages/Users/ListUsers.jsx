@@ -39,8 +39,8 @@ export default function ListUsers() {
                 <View style={styles.cardContent}>
                     <View style={styles.info}>
                         <Text style={styles.userName}>{item.name}</Text>
-                        <Text style={styles.userAddress}>{item.full_address}</Text> 
-                        <Text style={styles.userType}>Tipo: {item.profile}</Text> 
+                        <Text style={styles.userAddress}>{item.full_address}</Text>
+                        <Text style={styles.userType}>Tipo: {item.profile}</Text>
                     </View>
                     <Switch
                         value={item.status === 1} // verifica se o status é 1 (ativo)
@@ -59,7 +59,7 @@ export default function ListUsers() {
                 <Text style={styles.headerText}>Usuários</Text>
                 <TouchableOpacity
                     style={styles.newUserButton}
-                    onPress={() => navigation.navigate('RegisterUser')}
+                    onPress={() => navigation.navigate('RegisterUser')} // Verifique se o nome está igual
                 >
                     <Text style={styles.newUserButtonText}>Novo usuário</Text>
                 </TouchableOpacity>

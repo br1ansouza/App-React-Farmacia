@@ -5,7 +5,7 @@ import LoginScreen from './src/Pages/Login/Login';  // vai manter o login
 import HomeScreen from './src/Pages/Home/Home';
 import ListProductsScreen from './src/Pages/Products/ListProducts'; // tela de estoque
 import ListUsersScreen from './src/Pages/Users/ListUsers'; // tela de usuários
-import ListUsers from './src/Pages/Users/ListUsers';
+import RegisterUserScreen from './src/Pages/Users/RegisterUsers'; // tela de cadastro de usuários
 
 const Stack = createStackNavigator();
 
@@ -30,13 +30,24 @@ export default function App() {
         />
         <Stack.Screen
           name="ListUsers"
-          component={ListUsers}
+          component={ListUsersScreen}
           options={{
             headerShown: true,
             title: 'Usuários',
             headerStyle: { backgroundColor: '#121212' },
             headerTintColor: '#fff', 
-          }} />
+          }} 
+        />
+        <Stack.Screen
+          name="RegisterUser"
+          component={RegisterUserScreen}
+          options={{
+            headerShown: true,
+            title: 'Criar Usuário',
+            headerStyle: { backgroundColor: '#121212' },
+            headerTintColor: '#fff', 
+          }} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
