@@ -44,6 +44,18 @@ export default function ListUsers() {
         }
     };
 
+    // alerta de confirmação antes de excluir o usuário
+    const confirmDelete = (userId, profile) => {
+        Alert.alert(
+            'Excluir Usuário',
+            `Deseja realmente excluir o usuário do tipo ${profile}?`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                { text: 'Excluir', onPress: () => deleteUser(userId) },
+            ],
+            { cancelable: true }
+        );
+    };
 
     // renderiza cada item (usuário) da lista
     const renderUserItem = ({ item }) => {
