@@ -74,7 +74,7 @@ export default function ListUsers() {
                             trackColor={{ false: '#767577', true: '#81b0ff' }}  // azul para ativo, cinza para inativo
                             thumbColor={item.status === 1 ? '#f4f3f4' : '#f4f3f4'}
                         />
-                        {/* icone de lixeira para excluir */}
+                        {/* icone de lixeira para excluir, verifica se o perfil é do tipo motorista ou filial e aí exibe o botão de exclusão para esse tipo */}
                         {(item.profile === 'motorista' || item.profile === 'filial') && (
                             <TouchableOpacity
                                 style={styles.deleteButton}
