@@ -46,7 +46,6 @@ const Home = ({ navigation }) => {
 
     return (
         <Animated.View style={[styles.container, { opacity: fadeAnim, transform: [{ translateX: slideAnim }] }]}>
-           {/* cabeçalho com saudação e botão logout */}
             <View style={styles.header}>
                 <View style={styles.userInfo}>
                     <Image
@@ -60,7 +59,6 @@ const Home = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            {/* cards de estoque/usuários */}
             <View style={styles.card}>
                 <View style={styles.cardContent}>
                     <Image
@@ -98,6 +96,26 @@ const Home = ({ navigation }) => {
                     <Text style={styles.buttonText}>Gerenciar</Text>
                 </TouchableOpacity>
             </View>
+
+            <View style={styles.card}>
+                <View style={styles.cardContent}>
+                    <Image
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/2910/2910755.png' }} 
+                        style={styles.icon}
+                    />
+                    <View>
+                        <Text style={styles.cardText}>Movimentações</Text>
+                        <Text style={styles.cardDescription}>Movimentações de produtos</Text>
+                    </View>
+                </View>
+                <TouchableOpacity
+                    style={styles.manageButton}
+                    onPress={() => navigation.navigate('ListMovements')} 
+                    >
+                    <Text style={styles.buttonText}>Gerenciar</Text>
+                </TouchableOpacity>
+            </View>
+
         </Animated.View>
     );
 };
