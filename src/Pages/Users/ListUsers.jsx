@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Switch, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function ListUsers() {
     const [users, setUsers] = useState([]);
@@ -80,7 +80,7 @@ export default function ListUsers() {
                                 style={styles.deleteButton}
                                 onPress={() => confirmDelete(item.id, item.profile)}
                             >
-                                <MaterialIcons name="delete" size={24} color="#E53935" />
+                                <MaterialIcons name="delete" size={24} color="#fff" />
                             </TouchableOpacity>
                         )}
                     </View>
@@ -88,6 +88,29 @@ export default function ListUsers() {
             </View>
         );
     };
+
+    // function para renderizar a lista de usuários separada por tipo
+    const renderSection = (title, data) => {
+        return (
+            <View>
+                <Text style={styles.sectionTitle}>{title}</Text>
+                {data.length > 0 ? (
+                    <FlatList
+                        data={data}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={renderUserItem}
+                    />
+                ) : (
+                    <Text style={styles.emptyText}>Nenhum usuário {title} encontrado.</Text>
+                )}
+            </View>
+        );
+    };
+
+    // separar usuários por tipo
+    const admins = users.filter(user => user.profile === 'admin');
+    const drivers = users.filter(user => user.profile === 'motorista');
+    const branches = users.filter(user => user.profile === 'filial');
 
     return (
         <View style={styles.container}>
@@ -102,10 +125,13 @@ export default function ListUsers() {
             </View>
 
             <FlatList
-                data={users}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderUserItem}
-                contentContainerStyle={styles.list}
+                ListHeaderComponent={
+                    <>
+                        {renderSection('Admins', admins)}
+                        {renderSection('Motoristas', drivers)}
+                        {renderSection('Filiais', branches)}
+                    </>
+                }
             />
         </View>
     );
@@ -184,13 +210,26 @@ const styles = StyleSheet.create({
     },
     active: {
         backgroundColor: '#14510a',
-        borderColor: 'green',  // borda verde para usuários ativos
+        borderColor: 'green',  // borda verde usuários ativos
     },
     inactive: {
-        backgroundColor: '#d98580',  // fundo vermelho para usuários inativos
+        backgroundColor: '#d98580',  // fundo vermelho usuários inativos
         borderColor: 'red',
     },
     deleteButton: {
         marginLeft: 10,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginTop: 10,
+        marginBottom: 10,
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#D3D3D3',
+        textAlign: 'center',
+        marginBottom: 10,
     },
 });
