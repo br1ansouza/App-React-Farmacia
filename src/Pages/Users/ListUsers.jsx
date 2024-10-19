@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     userAddress: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#D3D3D3',
         marginBottom: 5,
     },

@@ -26,7 +26,10 @@ export default function App() {
         <Stack.Screen
           name="ListProducts"
           component={ListProductsScreen}
-          options={{ headerShown: true }} // manter o cabeçalho?
+          options={{  headerShown: true,
+            title: 'Produtos',
+            headerStyle: { backgroundColor: '#121212' },
+            headerTintColor: '#fff', }} 
         />
         <Stack.Screen
           name="ListUsers"
