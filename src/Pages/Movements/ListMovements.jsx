@@ -58,6 +58,7 @@ export default function ListMovements() {
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Produto:</Text> {item.produto?.nome || 'Desconhecido'}</Text>
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Quantidade:</Text> {item.quantidade || 'N/A'}</Text>
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Status:</Text> {item.status || 'Desconhecido'}</Text>
+                    <Text style={styles.movementDetail}><Text style={styles.bold}>Observações:</Text> {item.observacoes || 'Nenhuma'}</Text>
                 </View>
 
                 {/*  
