@@ -218,6 +218,11 @@ const styles = StyleSheet.create({
     },
     deleteButton: {
         marginLeft: 10,
+        backgroundColor: '#E53935',
+        padding: 10,
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     sectionTitle: {
         fontSize: 18,
