@@ -4,18 +4,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({ navigation }) => {
     const [userName, setUserName] = useState('');
+    const [userProfile, setUserProfile] = useState('');
     const fadeAnim = useRef(new Animated.Value(1)).current;
     const slideAnim = useRef(new Animated.Value(0)).current;
 
-    // recuperar o nome do usuário salvo no AsyncStorage para poder exibir na tela
+    // recupera/perfil do usuário armazenado no AsyncStorage
     useEffect(() => {
-        const fetchUserName = async () => {
+        const fetchUserData = async () => {
             const name = await AsyncStorage.getItem('@userName');
+            const profile = await AsyncStorage.getItem('@userProfile'); // Pegando o perfil do usuário
             if (name) {
                 setUserName(name);
             }
+            if (profile) {
+                setUserProfile(profile);
+            }
         };
-        fetchUserName();
+        fetchUserData();
     }, []);
 
     const handleLogout = async () => {
@@ -49,7 +54,7 @@ const Home = ({ navigation }) => {
             <View style={styles.header}>
                 <View style={styles.userInfo}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // vincular a imagem de perfil do DB
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // Vincular a imagem de perfil do DB
                         style={styles.profileImage}
                     />
                     <Text style={styles.greeting}>Olá, {userName}</Text>
@@ -59,62 +64,69 @@ const Home = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.card}>
-                <View style={styles.cardContent}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }} // imagem png do estoque
-                        style={styles.icon}
-                    />
-                    <View>
-                        <Text style={styles.cardText}>Estoque</Text>
-                        <Text style={styles.cardDescription}>Gerencie o inventário da loja</Text>
+            {/* vai exibir as abas de acordo com o perfil */}
+            {(userProfile === 'admin' || userProfile === 'filial') && (
+                <View style={styles.card}>
+                    <View style={styles.cardContent}>
+                        <Image
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5166/5166961.png' }} // png do estoque
+                            style={styles.icon}
+                        />
+                        <View>
+                            <Text style={styles.cardText}>Estoque</Text>
+                            <Text style={styles.cardDescription}>Gerencie o inventário da loja</Text>
+                        </View>
                     </View>
-                </View>
-                <TouchableOpacity
-                    style={styles.manageButton}
-                    onPress={() => navigation.navigate('ListProducts')}
-                >
-                    <Text style={styles.buttonText}>Gerenciar</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.card}>
-                <View style={styles.cardContent}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }} // imagem png da aba de usuários
-                        style={styles.icon}
-                    />
-                    <View>
-                        <Text style={styles.cardText}>Usuários</Text>
-                        <Text style={styles.cardDescription}>Acesse a lista de usuários</Text>
-                    </View>
-                </View>
-                <TouchableOpacity
-                    style={styles.manageButton}
-                    onPress={() => navigation.navigate('ListUsers')}
-                >
-                    <Text style={styles.buttonText}>Gerenciar</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.card}>
-                <View style={styles.cardContent}>
-                    <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/2910/2910755.png' }} 
-                        style={styles.icon}
-                    />
-                    <View>
-                        <Text style={styles.cardText}>Movimentações</Text>
-                        <Text style={styles.cardDescription}>Movimentações de produtos</Text>
-                    </View>
-                </View>
-                <TouchableOpacity
-                    style={styles.manageButton}
-                    onPress={() => navigation.navigate('ListMovements')} 
+                    <TouchableOpacity
+                        style={styles.manageButton}
+                        onPress={() => navigation.navigate('ListProducts')}
                     >
-                    <Text style={styles.buttonText}>Gerenciar</Text>
-                </TouchableOpacity>
-            </View>
+                        <Text style={styles.buttonText}>Gerenciar</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {userProfile === 'admin' && (
+                <View style={styles.card}>
+                    <View style={styles.cardContent}>
+                        <Image
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5065/5065003.png' }} // png da aba de usuários
+                            style={styles.icon}
+                        />
+                        <View>
+                            <Text style={styles.cardText}>Usuários</Text>
+                            <Text style={styles.cardDescription}>Acesse a lista de usuários</Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.manageButton}
+                        onPress={() => navigation.navigate('ListUsers')}
+                    >
+                        <Text style={styles.buttonText}>Gerenciar</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
+            {(userProfile === 'admin' || userProfile === 'filial' || userProfile === 'motorista') && (
+                <View style={styles.card}>
+                    <View style={styles.cardContent}>
+                        <Image
+                            source={{ uri: 'https://cdn-icons-png.flaticon.com/128/2910/2910755.png' }} 
+                            style={styles.icon}
+                        />
+                        <View>
+                            <Text style={styles.cardText}>Movimentações</Text>
+                            <Text style={styles.cardDescription}>Movimentações de produtos</Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.manageButton}
+                        onPress={() => navigation.navigate('ListMovements')} 
+                    >
+                        <Text style={styles.buttonText}>Gerenciar</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
 
         </Animated.View>
     );
@@ -169,7 +181,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         borderWidth: 1,
         borderColor: '#E0E0E0',
-        shadowColor: '#fff', // sombra "branca"
+        shadowColor: '#fff', 
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.4, 
         shadowRadius: 6,  

@@ -60,7 +60,7 @@ export default function RegisterUser() {
                 </Picker>
             </View>
 
-            {/* formulário */}
+
             <TextInput
                 style={styles.input}
                 placeholder="Nome completo"
