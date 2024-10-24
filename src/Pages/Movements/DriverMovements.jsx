@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker'; // Para capturar a imagem
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';  // usado para o icone de bicicleta
+import { FontAwesome } from '@expo/vector-icons';  // Ícone de bicicleta
 import MapView, { Marker } from 'react-native-maps';
 
 // instância de axios com timeout
 const axiosInstance = axios.create({
-    baseURL: 'http://10.0.2.2:3000', 
+    baseURL: 'http://10.0.2.2:3000',
     timeout: 10000, // timeout de 10 segundos
 });
 
@@ -42,7 +42,7 @@ export default function DriverMovements() {
         const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 0.5,  // reduzir a qualidade da imagem para 50% (unica fomra que resolveu o problema de travamento)
+            quality: 0.5, // reduzir a qualidade da imagem para 50% (unica fomra que resolveu o problema de travamento)
         });
 
         return result;
@@ -57,7 +57,7 @@ export default function DriverMovements() {
             status: newStatus,
             historico: [
                 ...prevMovement.historico,
-                { descricao: newStatus, data: currentDate }  // usa o objeto Date diretamente
+                { descricao: newStatus, data: currentDate } // usa o objeto Date diretamente
             ],
         }));
     };
@@ -65,18 +65,16 @@ export default function DriverMovements() {
     // aqui atualiuza o status e adiciona ao histórico
     const handleSimulateUpload = async (url, motorista, newStatus) => {
         Alert.alert('Sucesso', 'Upload de imagem bem-sucedido. Status atualizado.');
-        updateStatus(newStatus);  
+        updateStatus(newStatus);
     };
 
     const handleStartDelivery = async () => {
         try {
             // abrir a câmera e captura a imagem
             const result = await openCamera();
-
             // checa se a imagem foi capturada
             if (!result.cancelled) {
                 setImageUri(result.uri); // armazena a URI da imagem capturada
-                
                 handleSimulateUpload(`/movements/${movementId}/start`, 'Motorista X', 'em transito');
             } else {
                 Alert.alert('Erro', 'Nenhuma imagem capturada.');
@@ -89,13 +87,9 @@ export default function DriverMovements() {
 
     const handleFinalizeDelivery = async () => {
         try {
-            // abrir a câmera e captura a imagem
             const result = await openCamera();
-
-            // checa se a imagem foi capturada
             if (!result.cancelled) {
-                setImageUri(result.uri); 
-
+                setImageUri(result.uri); // armazena a URI da imagem capturada
                 handleSimulateUpload(`/movements/${movementId}/end`, 'Motorista X', 'coleta finalizada');
             } else {
                 Alert.alert('Erro', 'Nenhuma imagem capturada.');
@@ -107,19 +101,18 @@ export default function DriverMovements() {
     };
 
     const openMap = () => {
-        // verifica se nome "MapScreen" corresponde ao nome usado nas rotas
-        navigation.navigate('MapScreen', { 
-            origem: movement.origem, 
-            destino: movement.destino 
+        navigation.navigate('MapScreen', {
+            origem: movement.origem,
+            destino: movement.destino
         });
     };
 
     const formatStatus = (status) => {
-        if (status === 'Pedido Criado') {
+        if (status === 'created') {
             return 'Pedido Criado';
-        } else if (status === 'Em Trânsito') {
+        } else if (status === 'em transito') {
             return 'Em Trânsito';
-        } else if (status === 'Entrega Finalizada') {
+        } else if (status === 'coleta finalizada') {
             return 'Entrega Finalizada';
         }
         return status;
@@ -131,11 +124,11 @@ export default function DriverMovements() {
     };
 
     const getProgressPercentage = () => {
-        if (movement.status === 'Pedido Criado') {
+        if (movement.status === 'created') {
             return 33; 
-        } else if (movement.status === 'Em Trânsito') {
+        } else if (movement.status === 'em transito') {
             return 66; 
-        } else if (movement.status === 'Entrega Finalizada') {
+        } else if (movement.status === 'coleta finalizada') {
             return 100; 
         }
         return 0; // padrão caso nenhum status seja compatível
@@ -167,7 +160,7 @@ export default function DriverMovements() {
 
                 <View style={styles.transportIconContainer}>
                     <FontAwesome name="bicycle" size={24} color="green" />
-                    {renderProgressBar()} 
+                    {renderProgressBar()}
                 </View>
 
                 <Text style={styles.movementDetail}><Text style={styles.bold}>Origem:</Text> {movement.origem.nome}</Text>
@@ -180,7 +173,7 @@ export default function DriverMovements() {
                 ))}
 
                 <View style={styles.buttonContainer}>
-                    {movement.status === 'Pedido Criado' && (
+                    {movement.status === 'created' && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleStartDelivery}
@@ -189,7 +182,7 @@ export default function DriverMovements() {
                         </TouchableOpacity>
                     )}
 
-                    {movement.status === 'Em Trânsito' && (
+                    {movement.status === 'em transito' && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleFinalizeDelivery}
@@ -207,9 +200,7 @@ export default function DriverMovements() {
                 </View>
 
                 {imageUri && (
-                    <>
-                        <Image source={{ uri: imageUri }} style={styles.capturedImage} />
-                    </>
+                    <Image source={{ uri: imageUri }} style={styles.capturedImage} />
                 )}
             </View>
         );
