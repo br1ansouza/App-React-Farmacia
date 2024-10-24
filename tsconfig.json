@@ -2,5 +2,13 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "include": [
+    "src/**/*"  // Inclui apenas arquivos dentro da pasta "src"
+  ],
+  "exclude": [
+    "node_modules",   // Exclui a pasta "node_modules"
+    "dist",           // Exclui a pasta "dist", caso você a utilize
+    "build"           // Exclui a pasta "build"
+  ]
 }

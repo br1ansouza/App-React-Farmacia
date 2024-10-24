@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'; // verificar se vou utilizar ainda
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function ListMovements() {
     const [movements, setMovements] = useState([]);
@@ -77,6 +77,13 @@ export default function ListMovements() {
         return (
             <View style={styles.card}>
                 <View style={styles.cardContent}>
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => navigation.navigate('DriverMovements', { movementId: item.id })}
+                    >
+                        <MaterialIcons name="play-circle-outline" size={39} color="#288737" backgroundColor="#fff" />
+                    </TouchableOpacity>
+
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Origem:</Text> {item.origem?.nome || 'Desconhecido'}</Text>
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Destino:</Text> {item.destino?.nome || 'Desconhecido'}</Text>
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Produto:</Text> {item.produto?.nome || 'Desconhecido'}</Text>
@@ -84,17 +91,17 @@ export default function ListMovements() {
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Observações:</Text> {item.observacoes || 'Nenhuma'}</Text>
 
                     <Text style={styles.movementDetail}><Text style={styles.bold}>Status atual:</Text> {selectedStatus}</Text>
-                    
+
                     <View style={styles.pickerContainer}>
                         <Picker
                             selectedValue={selectedStatus}
                             onValueChange={(itemValue) => updateMovementStatus(item.id, itemValue)}
                             style={styles.picker}
                         >
-                            <Picker.Item label="Selecionar status" value={selectedStatus} />
-                            <Picker.Item label="Movimentação iniciada" value="iniciada" />
-                            <Picker.Item label="Movimentação finalizada" value="finalizada" />
-                            <Picker.Item label="Movimentação cancelada" value="cancelada" />
+                            <Picker.Item label="Selecionar status " value={selectedStatus} />
+                            <Picker.Item label="Movimentação iniciada ▶️" value="iniciada" />
+                            <Picker.Item label="Movimentação finalizada ✅" value="finalizada" />
+                            <Picker.Item label="Movimentação cancelada ❌" value="cancelada" />
                         </Picker>
                     </View>
                 </View>
@@ -131,20 +138,20 @@ export default function ListMovements() {
 
             {/* footer fixo com abas para alternar entre ativas/canceladas */}
             <View style={styles.footer}>
-                <TouchableOpacity 
-                    style={[styles.footerButton, activeTab === 'ativas' && styles.activeTab]} 
+                <TouchableOpacity
+                    style={[styles.footerButton, activeTab === 'ativas' && styles.activeTab]}
                     onPress={() => setActiveTab('ativas')}
                 >
                     <FontAwesome name="list-alt" size={24} color={activeTab === 'ativas' ? '#6200EE' : '#fff'} />
                     <Text style={styles.footerText}>Ativas</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
-                    style={[styles.footerButton, activeTab === 'canceladas' && styles.activeTab]} 
+                <TouchableOpacity
+                    style={[styles.footerButton, activeTab === 'canceladas' && styles.activeTab]}
                     onPress={() => setActiveTab('canceladas')}
                 >
                     <FontAwesome name="times-circle" size={24} color={activeTab === 'canceladas' ? '#6200EE' : '#fff'} />
-                    <Text style={styles.footerText}>Canceladas</Text>
+                    <Text style={styles.footerText}>Finalizadas</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -206,12 +213,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
     },
-    noMovementsText: {
-        color: '#fff',
-        fontSize: 18,
-        textAlign: 'center',
-        marginTop: 20,
-    },
     pickerContainer: {
         borderColor: '#6200EE',
         borderWidth: 1,
@@ -221,16 +222,20 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     picker: {
-        height: 45,
+        height: 50,
         color: '#333',
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    iconButton: {
+        position: 'absolute',
+        right: 10,
+        top: 10,
+        backgroundColor: 'transparent',
+    },
+    noMovementsText: {
         color: '#fff',
+        fontSize: 18,
+        textAlign: 'center',
         marginTop: 20,
-        marginBottom: 10,
-        paddingHorizontal: 20,
     },
     footer: {
         flexDirection: 'row',
@@ -248,7 +253,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     footerText: {
-        color: '#fff', 
+        color: '#fff',
         fontSize: 14,
     },
     activeTab: {

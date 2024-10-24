@@ -12,7 +12,7 @@ const Home = ({ navigation }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             const name = await AsyncStorage.getItem('@userName');
-            const profile = await AsyncStorage.getItem('@userProfile'); // Pegando o perfil do usuário
+            const profile = await AsyncStorage.getItem('@userProfile'); // pegando o perfil do usuário
             if (name) {
                 setUserName(name);
             }
@@ -54,7 +54,7 @@ const Home = ({ navigation }) => {
             <View style={styles.header}>
                 <View style={styles.userInfo}>
                     <Image
-                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // Vincular a imagem de perfil do DB
+                        source={{ uri: 'https://cdn-icons-png.flaticon.com/128/9566/9566077.png' }} // vincular a imagem de perfil do DB
                         style={styles.profileImage}
                     />
                     <Text style={styles.greeting}>Olá, {userName}</Text>

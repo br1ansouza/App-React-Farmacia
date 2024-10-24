@@ -8,8 +8,23 @@ import ListUsersScreen from './src/Pages/Users/ListUsers'; // tela de usuários
 import RegisterUserScreen from './src/Pages/Users/RegisterUsers'; // cadastro de usuários
 import ListMovements from './src/Pages/Movements/ListMovements'; // lista movimentações
 import RegisterMovementScreen from './src/Pages/Movements/RegisterMovements'; // registro movimentações
+import DriverMovements from './src/Pages/Movements/DriverMovements'; // tela movimentações motorista
+import MapScreen from './src/Pages/Map/MapScreen';  // tela do MapScreen
 
-const Stack = createStackNavigator();
+// definindo o tipo para o RootStackParamList
+export type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  ListProducts: undefined;
+  ListUsers: undefined;
+  RegisterUser: undefined;
+  ListMovements: undefined;
+  RegisterMovement: undefined;
+  DriverMovements: { movementId: number };
+  MapScreen: { origem: { nome: string; latitude: number; longitude: number }; destino: { nome: string; latitude: number; longitude: number } };
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
@@ -71,6 +86,26 @@ export default function App() {
           options={{
             headerShown: true,
             title: 'Adicionar Movimentação',
+            headerStyle: { backgroundColor: '#121212' },
+            headerTintColor: '#fff',
+          }}
+        />
+        <Stack.Screen
+          name="DriverMovements"
+          component={DriverMovements}
+          options={{
+            headerShown: true,
+            title: 'Movimentações - Motorista',
+            headerStyle: { backgroundColor: '#121212' },
+            headerTintColor: '#fff',
+          }}
+        />
+        <Stack.Screen
+          name="MapScreen"
+          component={MapScreen}
+          options={{
+            headerShown: true,
+            title: 'Mapa',
             headerStyle: { backgroundColor: '#121212' },
             headerTintColor: '#fff',
           }}
