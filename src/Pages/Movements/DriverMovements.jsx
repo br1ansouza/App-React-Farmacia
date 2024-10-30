@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker'; // Para capturar a imagem
+import * as ImagePicker from 'expo-image-picker'; // capturar a imagem
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons';  // Ícone de bicicleta
-import MapView, { Marker } from 'react-native-maps';
+import { FontAwesome } from '@expo/vector-icons';
 
 // instância de axios com timeout
 const axiosInstance = axios.create({
@@ -15,6 +14,7 @@ const axiosInstance = axios.create({
 export default function DriverMovements() {
     const [movement, setMovement] = useState(null);
     const [imageUri, setImageUri] = useState(null);
+    const [isDeliveryStarted, setIsDeliveryStarted] = useState(false);
     const route = useRoute();
     const navigation = useNavigation();
     const { movementId } = route.params;
@@ -36,45 +36,40 @@ export default function DriverMovements() {
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
         if (permissionResult.granted === false) {
             Alert.alert("Acesso negado", "Permissão para acessar a câmera foi negada.");
-            return { cancelled: true }; // return cancelado caso a permissão seja negada
+            return { cancelled: true };
         }
 
         const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4, 3],
-            quality: 0.5, // reduzir a qualidade da imagem para 50% (unica fomra que resolveu o problema de travamento)
+            quality: 0.5,
         });
 
         return result;
     };
 
     const updateStatus = (newStatus) => {
-        const currentDate = new Date();  // usa o objeto Date diretamente
-
-        // atualiza o status e o histórico da movimentação
+        const currentDate = new Date();
         setMovement((prevMovement) => ({
             ...prevMovement,
             status: newStatus,
             historico: [
                 ...prevMovement.historico,
-                { descricao: newStatus, data: currentDate } // usa o objeto Date diretamente
+                { descricao: newStatus, data: currentDate }
             ],
         }));
     };
 
-    // aqui atualiuza o status e adiciona ao histórico
     const handleSimulateUpload = async (url, motorista, newStatus) => {
-        Alert.alert('Sucesso', 'Upload de imagem bem-sucedido. Status atualizado.');
         updateStatus(newStatus);
     };
 
     const handleStartDelivery = async () => {
         try {
-            // abrir a câmera e captura a imagem
             const result = await openCamera();
-            // checa se a imagem foi capturada
             if (!result.cancelled) {
-                setImageUri(result.uri); // armazena a URI da imagem capturada
+                setImageUri(result.uri);
+                setIsDeliveryStarted(true);
                 handleSimulateUpload(`/movements/${movementId}/start`, 'Motorista X', 'em transito');
             } else {
                 Alert.alert('Erro', 'Nenhuma imagem capturada.');
@@ -89,8 +84,26 @@ export default function DriverMovements() {
         try {
             const result = await openCamera();
             if (!result.cancelled) {
-                setImageUri(result.uri); // armazena a URI da imagem capturada
+                setImageUri(result.uri);
                 handleSimulateUpload(`/movements/${movementId}/end`, 'Motorista X', 'coleta finalizada');
+
+                Alert.alert('Sucesso', 'Upload de imagem bem-sucedido.', [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            Alert.alert(
+                                'Entrega Finalizada',
+                                'Altere o status da movimentação na tela de Movimentações',
+                                [
+                                    {
+                                        text: 'OK',
+                                        onPress: () => navigation.navigate('ListMovements')
+                                    }
+                                ]
+                            );
+                        }
+                    }
+                ]);
             } else {
                 Alert.alert('Erro', 'Nenhuma imagem capturada.');
             }
@@ -108,35 +121,26 @@ export default function DriverMovements() {
     };
 
     const formatStatus = (status) => {
-        if (status === 'created') {
-            return 'Pedido Criado';
-        } else if (status === 'em transito') {
-            return 'Em Trânsito';
-        } else if (status === 'coleta finalizada') {
-            return 'Entrega Finalizada';
-        }
+        if (status === 'created') return 'Pedido Criado';
+        if (status === 'em transito') return 'Em Trânsito';
+        if (status === 'coleta finalizada') return 'Entrega Finalizada';
         return status;
     };
 
     const formatHistoryEntry = (entry) => {
-        const dateObject = new Date(entry.data);  // converte a data em um objeto Date
-        return `${entry.descricao} - ${dateObject.toLocaleString()}`;  // formatar a data corretamente
+        const dateObject = new Date(entry.data);
+        return `${entry.descricao} - ${dateObject.toLocaleString()}`;
     };
 
     const getProgressPercentage = () => {
-        if (movement.status === 'created') {
-            return 33; 
-        } else if (movement.status === 'em transito') {
-            return 66; 
-        } else if (movement.status === 'coleta finalizada') {
-            return 100; 
-        }
-        return 0; // padrão caso nenhum status seja compatível
+        if (movement.status === 'created') return 33;
+        if (movement.status === 'em transito') return 66;
+        if (movement.status === 'coleta finalizada') return 100;
+        return 0;
     };
 
     const renderProgressBar = () => {
         const progressPercentage = getProgressPercentage();
-
         return (
             <View style={styles.progressBarContainer}>
                 <View style={[styles.progressBar, { width: `${progressPercentage}%` }]} />
@@ -147,8 +151,13 @@ export default function DriverMovements() {
     const renderMovementDetails = () => {
         if (!movement) return null;
 
+        const cardBackgroundColor = 
+            movement.status === 'created' ? '#d3d3d3' :
+            movement.status === 'em transito' ? '#FFA07A' :
+            '#90EE90';
+
         return (
-            <View style={styles.card}>
+            <View style={[styles.card, { backgroundColor: cardBackgroundColor }]}>
                 <View style={styles.header}>
                     <Image source={{ uri: movement.produto.imagem }} style={styles.productImage} />
                     <View>
@@ -166,14 +175,13 @@ export default function DriverMovements() {
                 <Text style={styles.movementDetail}><Text style={styles.bold}>Origem:</Text> {movement.origem.nome}</Text>
                 <Text style={styles.movementDetail}><Text style={styles.bold}>Destino:</Text> {movement.destino.nome}</Text>
                 <Text style={styles.movementDetail}><Text style={styles.bold}>Status:</Text> {formatStatus(movement.status)}</Text>
-
                 <Text style={styles.movementDetail}><Text style={styles.bold}>Histórico:</Text></Text>
                 {movement.historico.map((entry, index) => (
                     <Text key={index} style={styles.historyEntry}>- {formatHistoryEntry(entry)}</Text>
                 ))}
 
                 <View style={styles.buttonContainer}>
-                    {movement.status === 'created' && (
+                    {!isDeliveryStarted && movement.status === 'created' && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleStartDelivery}
@@ -182,7 +190,7 @@ export default function DriverMovements() {
                         </TouchableOpacity>
                     )}
 
-                    {movement.status === 'em transito' && (
+                    {isDeliveryStarted && movement.status === 'em transito' && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleFinalizeDelivery}
@@ -191,12 +199,14 @@ export default function DriverMovements() {
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity
-                        style={styles.mapButton}
-                        onPress={openMap}
-                    >
-                        <Text style={styles.buttonText}>Mapa</Text>
-                    </TouchableOpacity>
+                    {(movement.status === 'created' || movement.status === 'em transito') && (
+                        <TouchableOpacity
+                            style={styles.mapButton}
+                            onPress={openMap}
+                        >
+                            <Text style={styles.buttonText}>Mapa</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {imageUri && (
@@ -223,7 +233,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         marginBottom: 20,
-        backgroundColor: '#e0e0e0',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
@@ -303,9 +312,6 @@ const styles = StyleSheet.create({
         height: 200,
         marginTop: 10,
         borderRadius: 10,
-    },
-    buttonDisabled: {
-        backgroundColor: '#B0B0B0',
     },
     progressBarContainer: {
         flex: 1,
