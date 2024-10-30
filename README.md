@@ -4,7 +4,7 @@ Este é um aplicativo mobile desenvolvido com React Native e Expo, criado para g
 
 ## Funcionalidades
 
- 1. 🔐 Autenticação
+### 1. 🔐 Autenticação
    - Tela de Login com campo de e-mail e senha.
    - Autenticação simples que permite o login de usuários com diferentes perfis, como administrador, motorista e filial.
 
