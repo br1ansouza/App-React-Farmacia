@@ -14,7 +14,6 @@ const axiosInstance = axios.create({
 export default function DriverMovements() {
     const [movement, setMovement] = useState(null);
     const [imageUri, setImageUri] = useState(null);
-    const [isDeliveryStarted, setIsDeliveryStarted] = useState(false);
     const route = useRoute();
     const navigation = useNavigation();
     const { movementId } = route.params;
@@ -69,7 +68,6 @@ export default function DriverMovements() {
             const result = await openCamera();
             if (!result.cancelled) {
                 setImageUri(result.uri);
-                setIsDeliveryStarted(true);
                 handleSimulateUpload(`/movements/${movementId}/start`, 'Motorista X', 'em transito');
             } else {
                 Alert.alert('Erro', 'Nenhuma imagem capturada.');
@@ -181,7 +179,7 @@ export default function DriverMovements() {
                 ))}
 
                 <View style={styles.buttonContainer}>
-                    {!isDeliveryStarted && movement.status === 'created' && (
+                    {(movement.status === 'created' || movement.status === 'iniciada') && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleStartDelivery}
@@ -190,7 +188,7 @@ export default function DriverMovements() {
                         </TouchableOpacity>
                     )}
 
-                    {isDeliveryStarted && movement.status === 'em transito' && (
+                    {movement.status === 'em transito' && (
                         <TouchableOpacity
                             style={styles.actionButton}
                             onPress={handleFinalizeDelivery}
