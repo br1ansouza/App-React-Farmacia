@@ -1,4 +1,4 @@
-# 📱 App-Projeto-Modulo1
+# 📱 App-React-Farmacia
 
 Este é um aplicativo mobile desenvolvido com React Native e Expo, criado para gerenciar o estoque, usuários e movimentações de uma farmácia fictícia.
 
